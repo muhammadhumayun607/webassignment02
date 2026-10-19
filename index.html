@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Event Registration</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0e7ff, #f3e8ff);
+            font-family: Arial, sans-serif;
+            padding: 40px 15px;
+        }
+
+        .registration-card {
+            max-width: 650px;
+            margin: auto;
+            border: none;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header-custom {
+            background: #4f46e5;
+            color: white;
+            padding: 25px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn-register {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-register:hover {
+            background: #3730a3;
+            color: white;
+        }
+
+        #eventDetails {
+            background: #f8fafc;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        #message {
+            display: none;
+        }
+
+        #registrationList li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        pre {
+            background: #1e293b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Registration Card -->
+    <div class="card registration-card">
+
+        <div class="card-header-custom" id="cardHeading">
+            <h2 id="eventTitle">Campus Connect 2026</h2>
+            <p class="mb-0">
+                Register for exciting university events and activities!
+            </p>
+        </div>
+
+        <div class="card-body">
+
+            <!-- jQuery Buttons -->
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button type="button" id="toggleDetails"
+                        class="btn btn-outline-primary btn-sm">
+                    Show / Hide Instructions
+                </button>
+
+                <button type="button" id="changeColor"
+                        class="btn btn-outline-success btn-sm">
+                    Change Heading Color
+                </button>
+            </div>
+
+            <!-- Event Details -->
+            <div id="eventDetails" class="mb-4">
+                <h5>Registration Instructions</h5>
+                <p>Fill in your name and email, select an event,
+                   and click the Register button.</p>
+
+                <ul>
+                    <li>Welcome Mixer — October 24, 2026</li>
+                    <li>Tech &amp; Innovation Talk — October 28, 2026</li>
+                    <li>Creative Campus Workshop — November 2, 2026</li>
+                </ul>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registrationForm">
+
+                <div class="mb-3">
+                    <label for="studentName" class="form-label">
+                        Student Name
+                    </label>
+                    <input type="text" id="studentName"
+                           class="form-control"
+                           placeholder="Enter your full name">
+                </div>
+
+                <div class="mb-3">
+                    <label for="studentEmail" class="form-label">
+                        Email Address
+                    </label>
+                    <input type="email" id="studentEmail"
+                           class="form-control"
+                           placeholder="Enter your email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="eventChoice" class="form-label">
+                        Select Event
+                    </label>
+
+                    <select id="eventChoice" class="form-select">
+                        <option value="Welcome Mixer">Welcome Mixer</option>
+                        <option value="Tech & Innovation Talk">
+                            Tech &amp; Innovation Talk
+                        </option>
+                        <option value="Creative Campus Workshop">
+                            Creative Campus Workshop
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-register w-100">
+                    Register
+                </button>
+
+            </form>
+
+            <!-- Message Area -->
+            <div id="message" class="alert mt-3"
+                 role="status" aria-live="polite"></div>
+
+            <!-- Dynamic Content -->
+            <hr>
+
+            <h5>Registration Activity</h5>
+
+            <button type="button" id="addActivity"
+                    class="btn btn-secondary btn-sm mb-2">
+                Add Sample Activity
+            </button>
+
+            <ul id="registrationList" class="list-unstyled">
+                <li>Welcome! Registration activity will appear here.</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <!-- Complete Source Code Section -->
+    <div class="mt-4">
+        <details>
+            <summary class="fw-bold">
+                View Complete Source Code
+            </summary>
+            <p class="mt-2">
+                The HTML source code is displayed below.
+            </p>
+            <pre><code id="sourceCode"></code></pre>
+        </details>
+    </div>
+
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    $("#registrationForm").submit(function (event) {
+        event.preventDefault();
+
+        let name = $("#studentName").val().trim();
+        let email = $("#studentEmail").val().trim();
+        let selectedEvent = $("#eventChoice").val();
+
+        let message = $("#message");
+
+        if (name === "" || email === "") {
+            message
+                .removeClass("alert-success")
+                .addClass("alert-danger")
+                .text("Error: Please enter your name and email.")
+                .stop(true, true)
+                .fadeIn(300);
+
+            return;
+        }
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(email)) {
+            message
+                .removeClass("alert-success")
+                .addClass("alert-danger")
+                .text("Please enter a valid email address.")
+                .stop(true, true)
+                .fadeIn(300);
+
+            return;
+        }
+        message
+            .removeClass("alert-danger")
+            .addClass("alert-success")
+            .text("Congratulations, " + name +
+                  "! You registered for " + selectedEvent + ".")
+            .stop(true, true)
+            .fadeIn(400);
+
+        $("<li>")
+            .text(name + " — " + selectedEvent)
+            .prependTo("#registrationList");
+    });
+
+
+  
+    $("#toggleDetails").click(function () {
+        $("#eventDetails").stop(true, true).slideToggle(300);
+    });
+
+
+  
+    $("#changeColor").click(function () {
+        $("#cardHeading").css({
+            "background-color": "#0f766e",
+            "color": "white"
+        });
+
+        if ($("#cardHeading").hasClass("changed")) {
+            $("#cardHeading").css("background-color", "#4f46e5");
+            $("#cardHeading").removeClass("changed");
+        } else {
+            $("#cardHeading").addClass("changed");
+        }
+    });
+
+    $("#addActivity").click(function () {
+        $("<li>")
+            .text("Sample activity added successfully!")
+            .prependTo("#registrationList");
+    });
+
+    $("#eventTitle").mouseover(function () {
+        $(this).css("color", "#fde68a");
+    });
+
+    $("#eventTitle").mouseout(function () {
+        $(this).css("color", "white");
+    });
+
+
+    $("#sourceCode").text(
+        "<!DOCTYPE html>\n" +
+        document.documentElement.outerHTML
+    );
+
+});
+</script>
+
+</body>
+</html>
